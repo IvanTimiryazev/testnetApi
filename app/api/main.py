@@ -34,13 +34,11 @@ def edit_profile(id):
     return jsonify({'user': user.email, 'id': user.id})
 
 
-@bp.route('/users/edit_password/<int:id>', methods=['PUT'])
+@bp.route('/users/edit_password', methods=['PUT'])
 @jwt_required()
-def edit_password(id):
+def edit_password():
     user_id = get_jwt_identity()
-    if int(user_id) != int(id):
-        abort(401)
-    user = Users.query.filter_by(id=id).first_or_404()
+    user = Users.query.filter_by(id=user_id).first_or_404()
     data = request.json or {}
     if 'current_password' not in data or 'password' not in data:
         return bad_request('must include current_password and password fields')
