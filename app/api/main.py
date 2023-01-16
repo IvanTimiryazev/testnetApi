@@ -6,7 +6,7 @@ from app.api.errors import bad_request
 from app import db
 
 
-@bp.route('/api/users/<int:id>', methods=['GET'])
+@bp.route('/users/<int:id>', methods=['GET'])
 @jwt_required()
 def get_user(id):
     user_id = get_jwt_identity()
@@ -16,13 +16,11 @@ def get_user(id):
     return jsonify({'user': user.email, 'id': user.id})
 
 
-@bp.route('/api/edit_profile/<int:id>', methods=['PUT'])
+@bp.route('/edit_profile', methods=['PUT'])
 @jwt_required()
-def edit_profile(id):
+def edit_profile():
     user_id = get_jwt_identity()
-    if int(user_id) != int(id):
-        abort(401)
-    user = Users.query.filter_by(id=id).first_or_404()
+    user = Users.query.filter_by(id=user_id).first_or_404()
     data = request.json or {}
     if 'email' not in data:
         return bad_request('must include email field')
@@ -34,7 +32,7 @@ def edit_profile(id):
     return jsonify({'user': user.email, 'id': user.id})
 
 
-@bp.route('/users/edit_password', methods=['PUT'])
+@bp.route('/edit_password', methods=['PUT'])
 @jwt_required()
 def edit_password():
     user_id = get_jwt_identity()

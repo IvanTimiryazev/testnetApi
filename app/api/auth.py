@@ -5,7 +5,7 @@ from app import db
 from app.api.errors import bad_request
 
 
-@bp.route('/api/register', methods=['POST'])
+@bp.route('/register', methods=['POST'])
 def register():
     data = request.json or {}
     if 'email' not in data or 'password' not in data:
@@ -20,7 +20,7 @@ def register():
     return jsonify({'access_token': token})
 
 
-@bp.route('/api/login', methods=['POST'])
+@bp.route('/login', methods=['POST'])
 def login():
     data = request.json or {}
     if 'email' not in data or 'password' not in data:
