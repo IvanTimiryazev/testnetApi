@@ -89,7 +89,7 @@ class Users(UserMixin, db.Model):
     def get_parse_results(self):
         results = [
             {
-                'url': i.url, 'content': i.content, 'date': i.date
+                'url': i.url, 'content': i.content, 'date': i.date, 'created': i.created, 'user_id': i.user_id
             } for i in LastParseResults.query.filter_by(user_id=self.id).order_by(LastParseResults.date.desc())
         ]
         return results

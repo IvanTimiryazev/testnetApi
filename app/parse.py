@@ -9,6 +9,7 @@ from app import create_app
 from rq import get_current_job
 from app import db
 from app.models import Task
+import logging
 
 app = create_app()
 app.app_context().push()
@@ -34,11 +35,14 @@ def scrap(sources: list, regs):
         _set_task_progress(0)
         for acc in sources:
             print(acc)
+            print('HUUUI')
             query = f'(from:{acc} since:{since.strftime("%Y-%m-%d")} until:{now.strftime("%Y-%m-%d")})'
             print(query)
+            app.logger.info(f'{query}')
             for tweet in snstwitter.TwitterSearchScraper(query).get_items():
-                tweets.append({'url': tweet.url, 'content': tweet.content, 'date': tweet.date})
+                tweets.append({'url': tweet.url, 'content': tweet.rawContent, 'date': tweet.date})
         print(tweets)
+        app.logger.info(f'{tweets}')
         print("--- %s seconds ---" % (time.time() - start))
         print(len(tweets))
         _set_task_progress(100)
@@ -50,10 +54,13 @@ def scrap(sources: list, regs):
 
 def parser(tweets, regs):
     print(regs)
+    app.logger.info(f'{regs}')
     r = '|'.join(regs)
     print(r)
+    app.logger.info(f'{r}')
     regex = fr'^(?=.*({r})).*$'
     print(regex)
+    app.logger.info(f'{regex}')
     matched = []
     for i in tweets:
         raw_text = i['content'].split()
@@ -62,5 +69,6 @@ def parser(tweets, regs):
         if parse_result:
             matched.append(i)
     print(matched)
+    app.logger.info(f'{matched}')
     return matched
 

@@ -84,7 +84,7 @@ def create_account():
     db.session.add(account)
     db.session.commit()
     resp = [
-        {'id': i.user_id, 'account': i.account}
+        {'id': i.id, 'user_id': i.user_id, 'account': i.account}
         for i in Source.query.filter_by(user_id=user.id).order_by(Source.created.desc())
     ]
     return jsonify(resp)
@@ -127,7 +127,7 @@ def create_key():
     db.session.add(regex)
     db.session.commit()
     resp = [
-        {'id': i.user_id, 'regex': i.regex}
+        {'id': i.id, 'user_id': i.user_id, 'account': i.regex}
         for i in UsersRegex.query.filter_by(user_id=user.id).order_by(UsersRegex.created.desc())
     ]
     return jsonify(resp)
@@ -136,13 +136,22 @@ def create_key():
 @bp.route('/last_results', methods=['GET'])
 @jwt_required()
 def get_last_results():
-    pass
+    user_id = get_jwt_identity()
+    user = Users.query.filter_by(id=user_id).first_or_404()
+    result = user.get_parse_results()
+    return jsonify(result)
 
 
 @bp.route('/last_results', methods=['DELETE'])
 @jwt_required()
 def delete_last_results():
-    pass
+    user_id = get_jwt_identity()
+    user = Users.query.filter_by(id=user_id).first_or_404()
+    if not user.results.all():
+        return bad_request('There is not any results yet')
+    user.delete_pars_results()
+    db.session.commit()
+    return jsonify({'status': 'OK'})
 
 
 @bp.route('/parsing', methods=['GET'])

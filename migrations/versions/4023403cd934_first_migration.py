@@ -1,8 +1,8 @@
-"""pstg
+"""first migration
 
-Revision ID: 1a18ec98dfb5
-Revises: d5235dd8d887
-Create Date: 2023-01-15 23:14:22.774737
+Revision ID: 4023403cd934
+Revises: 
+Create Date: 2023-01-24 01:27:52.606681
 
 """
 from alembic import op
@@ -10,8 +10,8 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '1a18ec98dfb5'
-down_revision = 'd5235dd8d887'
+revision = '4023403cd934'
+down_revision = None
 branch_labels = None
 depends_on = None
 

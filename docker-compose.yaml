@@ -2,26 +2,57 @@ version: "3.8"
 
 services:
 
-  app:
-    build: .
-    restart: always
-    depends_on:
-      - postgres
+  redis-server:
+    image: redis:6.0.14-alpine3.14
     ports:
-      - "5005:5005"
-    environment:
-      - SQLALCHEMY_DATABASE_URI=${DATABASE_URL}
-      - SECRET_KEY=${SECRET_KEY}
+      - "6379:6379"
 
   postgres:
     image: postgres:14.3
     restart: always
     ports:
       - "5432:5432"
+    volumes:
+      - $HOME/docker/volumes/postgres/testnet:/var/lib/postgresql/data
+    env_file:
+      - .env
     environment:
       - POSTGRES_USER=${DB_USER}
       - POSTGRES_PASSWORD=${DB_PASSWORD}
       - POSTGRES_DB=${DB_NAME}
+
+  app:
+    build:
+      dockerfile: Dockerfile
+      context: .
+    container_name: app
+    restart: always
+    depends_on:
+      - postgres
+      - redis-server
+    ports:
+      - "5005:5005"
+    links:
+      - redis-server:redis-server
+    environment:
+      - SQLALCHEMY_DATABASE_URI=${DATABASE_URL}
+      - SECRET_KEY=${SECRET_KEY}
+      - REDIS_URL=redis://redis-server:6379/0
+
+  rq-worker:
+    build:
+      dockerfile: Dockerfile
+      context: .
+    container_name: rq-worker
+    links:
+      - redis-server:redis-server
+    environment:
+      - REDIS_URL=redis://redis-server:6379/0
+    entrypoint: /usr/local/bin/rq worker -u redis://redis-server:6379/0 testnet_worker
+    depends_on:
+      - redis-server
+      - app
+
 
 
 
