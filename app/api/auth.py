@@ -31,10 +31,3 @@ def login():
         return jsonify({'access_token': token})
     else:
         return bad_request('wrong password')
-
-
-
-
-
-
-

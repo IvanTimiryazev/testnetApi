@@ -38,6 +38,14 @@ services:
       - SQLALCHEMY_DATABASE_URI=${DATABASE_URL}
       - SECRET_KEY=${SECRET_KEY}
       - REDIS_URL=redis://redis-server:6379/0
+      - MAIL_SERVER=${MAIL_SERVER}
+      - MAIL_PORT=${MAIL_PORT}
+      - MAIL_USE_TLS=${MAIL_USE_TLS}
+      - MAIL_PASSWORD=${MAIL_PASSWORD}
+      - MAIL_USERNAME=${MAIL_USERNAME}
+      - ADMINS=${ADMINS}
+    volumes:
+      - $HOME/docker/volumes/testnet:/var/lib
 
   rq-worker:
     build:
@@ -52,7 +60,3 @@ services:
     depends_on:
       - redis-server
       - app
-
-
-
-
