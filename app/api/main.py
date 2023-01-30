@@ -96,7 +96,7 @@ def get_keys():
     user_id = get_jwt_identity()
     user = Users.query.filter_by(id=user_id).first_or_404()
     result = user.user_regs()
-    resp = [{'id': i.id, 'user_id': i.user_id, 'regex': i.regex} for i in result]
+    resp = [{'id': i.id, 'user_id': i.user_id, 'key': i.regex} for i in result]
     return jsonify(resp)
 
 
@@ -127,7 +127,7 @@ def create_key():
     db.session.add(regex)
     db.session.commit()
     resp = [
-        {'id': i.id, 'user_id': i.user_id, 'account': i.regex}
+        {'id': i.id, 'user_id': i.user_id, 'key': i.regex}
         for i in UsersRegex.query.filter_by(user_id=user.id).order_by(UsersRegex.created.desc())
     ]
     return jsonify(resp)
