@@ -82,14 +82,18 @@ class Users(UserMixin, db.Model):
             LastParseResults.query.filter_by(user_id=self.id).delete()
         for i in results:
             result = LastParseResults(
-                url=i['url'], content=i['content'], date=i['date'], user=self)
+                url=i['url'], content=i['content'], date=i['date'],
+                username=i['username'], display_name=i['display_name'], profile_image_url=i['profile_image_url'],
+                user=self)
             db.session.add(result)
         db.session.commit()
 
     def get_parse_results(self):
         results = [
             {
-                'url': i.url, 'content': i.content, 'date': i.date, 'created': i.created, 'user_id': i.user_id
+                'url': i.url, 'content': i.content, 'date': i.date, 'username': i.username,
+                'display_name': i.display_name, 'profile_image_url': i.profile_image_url,
+                'created': i.created, 'user_id': i.user_id
             } for i in LastParseResults.query.filter_by(user_id=self.id).order_by(LastParseResults.date.desc())
         ]
         return results
@@ -119,7 +123,7 @@ class Users(UserMixin, db.Model):
     def get_task_in_progress(self, name):
         return self.tasks.filter_by(name=name, complete=False).first()
 
-    def get_token(self, expire_time=24):
+    def get_token(self, expire_time=168):
         expire_delta = timedelta(hours=expire_time)
         token = create_access_token(identity=self.id, expires_delta=expire_delta)
         return token
@@ -172,6 +176,9 @@ class LastParseResults(db.Model):
     url = db.Column(db.String(100))
     content = db.Column(db.Text)
     date = db.Column(db.DateTime, default=datetime.utcnow)
+    username = db.Column(db.String(150))
+    display_name = db.Column(db.String(150))
+    profile_image_url = db.Column(db.String(100))
     created = db.Column(db.DateTime, index=True, default=datetime.utcnow)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
 

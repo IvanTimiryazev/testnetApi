@@ -38,7 +38,9 @@ def scrap(sources: list, regs):
             query = f'(from:{acc} since:{since.strftime("%Y-%m-%d")} until:{now.strftime("%Y-%m-%d")})'
             print(query)
             for tweet in snstwitter.TwitterSearchScraper(query).get_items():
-                tweets.append({'url': tweet.url, 'content': tweet.rawContent, 'date': tweet.date})
+                tweets.append({'url': tweet.url, 'content': tweet.rawContent, 'date': tweet.date,
+                               'username': tweet.user.username, 'display_name': tweet.user.displayname,
+                               'profile_image_url': tweet.user.profileImageUrl})
         print("--- %s seconds ---" % (time.time() - start))
         print(len(tweets))
         _set_task_progress(100)

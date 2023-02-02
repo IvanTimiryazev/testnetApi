@@ -10,8 +10,9 @@ from flask_bootstrap import Bootstrap
 from redis import Redis
 import rq
 from flask_jwt_extended import JWTManager
+from flask_swagger_ui import get_swaggerui_blueprint
 
-from config import Config
+from config import Config, Swagger
 
 
 db = SQLAlchemy()
@@ -21,6 +22,11 @@ login.login_view = 'auth.login'
 mail = Mail()
 bootstrap = Bootstrap()
 jwt = JWTManager()
+swagger_blueprint = get_swaggerui_blueprint(
+    Swagger.SWAGGER_URL,
+    Swagger.API_URL,
+    config={'app_name': 'TestnetAPI'}
+)
 
 
 def create_app(config_class=Config):
@@ -38,6 +44,7 @@ def create_app(config_class=Config):
 
     from app.api import bp as api_bp
     app.register_blueprint(api_bp, url_prefix='/api/v1')
+    app.register_blueprint(swagger_blueprint, url_prefix=Swagger.SWAGGER_URL)
 
     if not app.debug:
         if app.config['MAIL_SERVER']:

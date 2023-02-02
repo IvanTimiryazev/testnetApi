@@ -19,3 +19,8 @@ class Config(object):
     ADMINS = os.getenv('ADMINS')
     TIME_INTERVAL = 30
     REDIS_URL = os.getenv('REDIS_URL') or 'redis://'
+
+
+class Swagger(object):
+    SWAGGER_URL = '/swagger'
+    API_URL = '/static/swagger.yaml'
