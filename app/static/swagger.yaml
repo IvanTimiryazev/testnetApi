@@ -152,11 +152,6 @@ paths:
                 $ref: '#/components/schemas/Error'
         '404':
           description: not found
-
-
-
-
-
   /accounts:
     get:
       tags:
@@ -301,27 +296,69 @@ paths:
                 $ref: '#/components/schemas/Error'
         '404':
           description: not found
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+  /parsing:
+    get:
+      tags:
+        - Parsing
+      description: Launch parsing
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Parsing'
+        '400':
+          description: bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: not found
+  /last_results:
+    get:
+      tags:
+        - Parsing
+      description: Gets last parsing result
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/LastResults'
+        '400':
+          description: bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: not found
+    delete:
+      tags:
+        - Parsing
+      description: Delete last parsing result
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StatusOk'
+        '400':
+          description: bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: not found
 components:
   securitySchemes:
     bearerAuth:
@@ -362,6 +399,47 @@ components:
         id:
           type: integer
           example: 1
+    Parsing:
+      type: object
+      properties:
+        url:
+          type: string
+          example: 'http://blablalink.com/123456'
+        content:
+          type: string
+          example: 'I like beer!'
+        date:
+          type: string
+        username:
+          type: string
+          example: 'Batman'
+        display_name:
+          type: string
+        profile_image_url:
+          type: string
+    LastResults:
+      type: object
+      properties:
+        url:
+          type: string
+          example: 'http://blablalink.com/123456'
+        content:
+          type: string
+          example: 'I like beer!'
+        date:
+          type: string
+        username:
+          type: string
+          example: 'Batman'
+        display_name:
+          type: string
+        profile_image_url:
+          type: string
+        created:
+          type: string
+        user_id:
+          type: integer
+          example: 12
     Error:
       type: object
       properties:
