@@ -15,6 +15,7 @@ class UserModelCase(unittest.TestCase):
         self.app = create_app(TestConfig)
         self.app_context = self.app.app_context()
         self.app_context.push()
+        print("kek")
         db.create_all()
 
     def tearDown(self):
